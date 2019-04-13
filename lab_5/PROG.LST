@@ -1,0 +1,190 @@
+Microsoft (R) Macro Assembler Version 5.10                  3/11/19 10:54:16
+                                                             Page     1-1
+
+
+       1 0000				sseg segment para stack 'stack'
+       2 0000  0064[				B		db 100 dup('0')
+					 
+       3	   30			
+       4			 ]	
+       5				
+       6 0064				sseg ends
+       7				
+       8 0000				dseg	segment para public 'data' 
+       9 0000  05				n		db 5
+      10 0001  00				tmp		db ?
+      11 0002  31 31 31 31 31			A		db '11111'
+      12 0007  32 32 32 32 32					db '22222'
+      13 000C  33 33 33 33 33					db '33333'
+      14 0011  34 33 34 34 34					db '43444'
+      15 0016  35 35 35 35 35					db '55555' 
+      16 001B				dseg ends
+      17				
+      18				subttl	Laboratornaya # 5 ; loop1 - row
+					s, loop2 - columns
+      19				
+      20 0000				cseg	segment para public 'code'
+      21						assume cs:cseg, ds:dseg
+					, ss:sseg 
+      22				 
+      23 0000				print	PROC
+      24 0000  B4 02						mov AH, 02h
+      25 0002  CD 21						int 21h
+      26 0004  C3						ret
+      27 0005				print	ENDP 
+      28				
+      29 0005				mulBX	PROC
+      30 0005  8B C3						mov AX, BX
+      31 0007  F6 26 0000 R					mul n
+      32 000B  8B D8						mov BX, AX ; AX
+					 = AL * n = BX * 5
+      33 000D  C3						ret
+      34 000E				mulBX	ENDP
+      35				
+      36 000E				mulSI	PROC
+      37 000E  8B C6						mov AX, SI
+      38 0010  F6 26 0000 R					mul n
+      39 0014  8B F0						mov SI, AX ; AX
+					 = AL * n = SI * 5
+      40 0016  C3						ret
+      41 0017				mulSI	ENDP
+      42				
+      43 0017				print_elem PROC
+      44 0017  56						push SI
+      45 0018  E8 000E R					call mulSI
+      46 001B  36: 8A 90 0000 R					mov DL, B[SI][B
+					X]
+      47 0020  5E						pop SI
+      48 0021  E8 0000 R					call print
+Microsoft (R) Macro Assembler Version 5.10                  3/11/19 10:54:16
+                                                             Page     1-2
+Laboratornaya # 5 ; loop1 - rows, loop2 - columns           
+
+      49 0024  C3						ret
+      50 0025				print_elem ENDP
+      51				
+      52 0025				print_mtr	PROC
+      53 0025  BE 0000						mov SI, 0
+      54 0028  BB 0000			LOOP11: 	mov BX, 0
+      55 002B  E8 0017 R		LOOP22: 	call print_elem ; B[SI 
+					* 5][BX]
+      56 002E  83 FB 04						cmp BX, 4h
+      57 0031  74 03						je ENDL_2
+      58 0033  43						inc BX
+      59 0034  E2 F5						loop LOOP22    
+      60 0036  B2 0A			ENDL_2: 	mov DL, 10d
+      61 0038  E8 0000 R					call print
+      62 003B  B2 0D						mov DL, 13d
+      63 003D  E8 0000 R					call print
+      64 0040  83 FE 04						cmp SI, 4h
+      65 0043  74 03						je ENDL_1
+      66 0045  46						inc SI
+      67 0046  E2 E0						loop LOOP11
+      68 0048  C3			ENDL_1: 	ret
+      69 0049				print_mtr	ENDP
+      70				
+      71 0049				trans		PROC
+      72 0049  BE 0000						mov SI, 0
+      73 004C  BB 0000			LOOP1:		mov BX, 0  
+      74 004F				LOOP2:  	;B[BX * 5][SI] = A[SI *
+					 5][BX]
+      75 004F  53						push BX
+      76 0050  56						push SI
+      77 0051  E8 000E R					call mulSI
+      78 0054  8A A8 0002 R					mov CH, A[SI][B
+					X]
+      79 0058  5E						pop SI
+      80 0059  E8 0005 R					call mulBX
+      81 005C  36: 88 A8 0000 R					mov B[BX][SI], 
+					CH
+      82 0061  5B						pop BX
+      83 0062  83 FB 04						cmp BX, 4h
+      84 0065  74 03						je END_2
+      85 0067  43						inc BX
+      86 0068  E2 E5						loop LOOP2
+      87 006A  83 FE 04			END_2:		cmp SI, 4h
+      88 006D  74 03						je END_1
+      89 006F  46						inc SI
+      90 0070  E2 DA						loop LOOP1
+      91 0072  8B C6			END_1:		mov AX, SI
+      92 0074  F6 26 0000 R					mul n
+      93 0078  8B F0						mov SI, AX ; AX
+					 = AL * n = SI * 5
+      94 007A  C3						ret
+      95 007B				trans ENDP
+      96				
+      97 007B				main:
+Microsoft (R) Macro Assembler Version 5.10                  3/11/19 10:54:16
+                                                             Page     1-3
+Laboratornaya # 5 ; loop1 - rows, loop2 - columns           
+
+      98 007B  B8 ---- R					mov AX, dseg
+      99 007E  8E D8						mov DS, AX
+     100				
+     101 0080  E8 0049 R					call trans
+     102 0083  E8 0025 R					call print_mtr
+     103				
+     104 0086  B8 4C00						mov ax, 4C00h
+     105 0089  CD 21						int 21h
+     106 008B				cseg ends
+     107				end main
+Microsoft (R) Macro Assembler Version 5.10                  3/11/19 10:54:16
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CSEG . . . . . . . . . . . . . .  	008B	PARA	PUBLIC	'CODE'
+DSEG . . . . . . . . . . . . . .  	001B	PARA	PUBLIC	'DATA'
+SSEG . . . . . . . . . . . . . .  	0064	PARA	STACK	'STACK'
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+A  . . . . . . . . . . . . . . .  	L BYTE	0002	DSEG
+
+B  . . . . . . . . . . . . . . .  	L BYTE	0000	SSEG	Length = 0064
+
+ENDL_1 . . . . . . . . . . . . .  	L NEAR	0048	CSEG
+ENDL_2 . . . . . . . . . . . . .  	L NEAR	0036	CSEG
+END_1  . . . . . . . . . . . . .  	L NEAR	0072	CSEG
+END_2  . . . . . . . . . . . . .  	L NEAR	006A	CSEG
+
+LOOP1  . . . . . . . . . . . . .  	L NEAR	004C	CSEG
+LOOP11 . . . . . . . . . . . . .  	L NEAR	0028	CSEG
+LOOP2  . . . . . . . . . . . . .  	L NEAR	004F	CSEG
+LOOP22 . . . . . . . . . . . . .  	L NEAR	002B	CSEG
+
+MAIN . . . . . . . . . . . . . .  	L NEAR	007B	CSEG
+MULBX  . . . . . . . . . . . . .  	N PROC	0005	CSEG	Length = 0009
+MULSI  . . . . . . . . . . . . .  	N PROC	000E	CSEG	Length = 0009
+
+N  . . . . . . . . . . . . . . .  	L BYTE	0000	DSEG
+
+PRINT  . . . . . . . . . . . . .  	N PROC	0000	CSEG	Length = 0005
+PRINT_ELEM . . . . . . . . . . .  	N PROC	0017	CSEG	Length = 000E
+PRINT_MTR  . . . . . . . . . . .  	N PROC	0025	CSEG	Length = 0024
+
+TMP  . . . . . . . . . . . . . .  	L BYTE	0001	DSEG
+TRANS  . . . . . . . . . . . . .  	N PROC	0049	CSEG	Length = 0032
+
+@CPU . . . . . . . . . . . . . .  	TEXT  0101h		
+@FILENAME  . . . . . . . . . . .  	TEXT  prog		
+@VERSION . . . . . . . . . . . .  	TEXT  510		
+
+Microsoft (R) Macro Assembler Version 5.10                  3/11/19 10:54:16
+                                                             Symbols-2
+
+
+
+    104 Source  Lines
+    104 Total   Lines
+     34 Symbols
+
+  46544 + 443517 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

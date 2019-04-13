@@ -1,0 +1,104 @@
+sseg segment para stack 'stack'
+	B		db 100 dup('0') 
+sseg ends
+
+dseg	segment para public 'data' 
+	n		db 5
+	tmp		db ?
+	A		db '11111'
+			db '22222'
+			db '33333'
+			db '43444'
+			db '55555' 
+dseg ends
+
+subttl	Laboratornaya # 5 ; loop1 - rows, loop2 - columns
+
+cseg	segment para public 'code'
+		assume cs:cseg, ds:dseg, ss:sseg 
+ 
+print	PROC
+			mov AH, 02h
+			int 21h
+			ret
+print	ENDP 
+
+mulBX	PROC
+			mov AX, BX
+			mul n
+			mov BX, AX ; AX = AL * n = BX * 5
+			ret
+mulBX	ENDP
+
+mulSI	PROC
+			mov AX, SI
+			mul n
+			mov SI, AX ; AX = AL * n = SI * 5
+			ret
+mulSI	ENDP
+
+print_elem PROC
+			push SI
+			call mulSI
+			mov DL, B[SI][BX]
+			pop SI
+			call print
+			ret
+print_elem ENDP
+
+print_mtr	PROC
+			mov SI, 0
+LOOP11: 	mov BX, 0
+LOOP22: 	call print_elem ; B[SI * 5][BX]
+			cmp BX, 4h
+			je ENDL_2
+			inc BX
+			loop LOOP22    
+ENDL_2: 	mov DL, 10d
+			call print
+			mov DL, 13d
+			call print
+			cmp SI, 4h
+			je ENDL_1
+			inc SI
+			loop LOOP11
+ENDL_1: 	ret
+print_mtr	ENDP
+
+trans		PROC
+			mov SI, 0
+LOOP1:		mov BX, 0  
+LOOP2:  	;B[BX * 5][SI] = A[SI * 5][BX]
+			push BX
+			push SI
+			call mulSI
+			mov CH, A[SI][BX]
+			pop SI
+			call mulBX
+			mov B[BX][SI], CH
+			pop BX
+			cmp BX, 4h
+			je END_2
+			inc BX
+			loop LOOP2
+END_2:		cmp SI, 4h
+			je END_1
+			inc SI
+			loop LOOP1
+END_1:		mov AX, SI
+			mul n
+			mov SI, AX ; AX = AL * n = SI * 5
+			ret
+trans ENDP
+
+main:
+			mov AX, dseg
+			mov DS, AX
+
+			call trans
+			call print_mtr
+
+			mov ax, 4C00h
+			int 21h
+cseg ends
+end main
