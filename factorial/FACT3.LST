@@ -1,0 +1,145 @@
+Microsoft (R) Macro Assembler Version 5.10                  4/7/19 19:46:52
+
+                                                             Page     1-1
+
+
+       1				PUBLIC FACTR
+       2				PUBLIC FACTS
+       3				PUBLIC INFACTS
+       4				PUBLIC INFACT
+       5				
+       6 0000				CODE    SEGMENT PARA PUBLIC 'CODE'
+       7				        ASSUME CS:CODE
+       8				
+       9 0000				FACTR    PROC FAR
+      10				            
+      11 0000  55			    BEFORE: PUSH BP 
+      12 0001  8B EC			            MOV BP,SP 
+      13 0003  83 EC 64			            SUB SP,100
+      14 0006  56			            PUSH SI
+      15							
+      16 0007  8B 4E 08			    GETP:   MOV CX, [BP+8]
+      17 000A  8B 76 06						MOV SI, [BP+6]
+      18				            
+      19 000D  E8 001A R		    L1:     CALL INFACT
+      20 0010  8B 76 06			            MOV SI, [BP+6]
+      21 0013  89 04			            MOV [SI],AX
+      22				    
+      23 0015  5E			    AFTER:  POP SI
+      24 0016  8B E5						MOV SP, BP
+      25 0018  5D			            POP BP
+      26				
+      27 0019  CB			            RET
+      28 001A				FACTR    ENDP
+      29				
+      30 001A				INFACT    PROC NEAR
+      31							
+      32 001A  B8 0001			    GET:    MOV AX,1
+      33							
+      34 001D  83 F9 01			    PRE:    CMP CX, 1
+      35 0020  74 07			            JE AF
+      36				            
+      37 0022  49			    L:      DEC CX
+      38 0023  E8 001A R		            CALL INFACT
+      39 0026  41			            INC CX
+      40 0027  F7 E1			            MUL CX
+      41				    
+      42 0029  C3			    AF:     RET
+      43				    
+      44				            
+      45 002A				INFACT    ENDP
+      46				
+      47 002A				FACTS    PROC FAR
+      48				            
+      49 002A  55			    BEFORS: PUSH BP 
+      50 002B  8B EC			            MOV BP,SP 
+      51 002D  83 EC 64			            SUB SP,100
+      52 0030  56			            PUSH SI
+      53							
+      54 0031  8B 4E 08			    GETS:   MOV CX, [BP+8]
+Microsoft (R) Macro Assembler Version 5.10                  4/7/19 19:46:52
+
+                                                             Page     1-2
+
+
+      55 0034  8B 76 06						MOV SI, [BP+6]
+      56 0037  B8 0001						MOV AX,1
+      57				            
+      58 003A  E8 0047 R		    L1S:    CALL INFACTS
+      59 003D  8B 76 06			            MOV SI, [BP+6]
+      60 0040  89 04			            MOV [SI],AX
+      61				    
+      62 0042  5E			    AFTES:  POP SI
+      63 0043  8B E5						MOV SP, BP
+      64 0045  5D			            POP BP
+      65				
+      66 0046  CB			            RET
+      67 0047				FACTS    ENDP
+      68				
+      69 0047				INFACTS    PROC NEAR
+      70							
+      71 0047  F7 E1				START:	MUL CX
+      72 0049  49						DEC CX
+      73 004A  74 03						JE AFS
+      74 004C  E8 0047 R					CALL INFACTS
+      75				    
+      76 004F  C3			    AFS:    RET
+      77				            
+      78 0050				INFACTS    ENDP
+      79				
+      80 0050				CODE    ENDS
+      81				        END
+Microsoft (R) Macro Assembler Version 5.10                  4/7/19 19:46:52
+
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CODE . . . . . . . . . . . . . .  	0050	PARA	PUBLIC	'CODE'
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+AF . . . . . . . . . . . . . . .  	L NEAR	0029	CODE
+AFS  . . . . . . . . . . . . . .  	L NEAR	004F	CODE
+AFTER  . . . . . . . . . . . . .  	L NEAR	0015	CODE
+AFTES  . . . . . . . . . . . . .  	L NEAR	0042	CODE
+
+BEFORE . . . . . . . . . . . . .  	L NEAR	0000	CODE
+BEFORS . . . . . . . . . . . . .  	L NEAR	002A	CODE
+
+FACTR  . . . . . . . . . . . . .  	F PROC	0000	CODE	Global	Length = 001A
+FACTS  . . . . . . . . . . . . .  	F PROC	002A	CODE	Global	Length = 001D
+
+GET  . . . . . . . . . . . . . .  	L NEAR	001A	CODE
+GETP . . . . . . . . . . . . . .  	L NEAR	0007	CODE
+GETS . . . . . . . . . . . . . .  	L NEAR	0031	CODE
+
+INFACT . . . . . . . . . . . . .  	N PROC	001A	CODE	Global	Length = 0010
+INFACTS  . . . . . . . . . . . .  	N PROC	0047	CODE	Global	Length = 0009
+
+L  . . . . . . . . . . . . . . .  	L NEAR	0022	CODE
+L1 . . . . . . . . . . . . . . .  	L NEAR	000D	CODE
+L1S  . . . . . . . . . . . . . .  	L NEAR	003A	CODE
+
+PRE  . . . . . . . . . . . . . .  	L NEAR	001D	CODE
+
+START  . . . . . . . . . . . . .  	L NEAR	0047	CODE
+
+@CPU . . . . . . . . . . . . . .  	TEXT  0101h		
+@FILENAME  . . . . . . . . . . .  	TEXT  fact3		
+@VERSION . . . . . . . . . . . .  	TEXT  510		
+
+
+     81 Source  Lines
+     81 Total   Lines
+     24 Symbols
+
+  46588 + 445520 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

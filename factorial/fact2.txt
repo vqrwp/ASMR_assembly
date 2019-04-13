@@ -1,0 +1,39 @@
+PUBLIC FACTP
+
+CODE    SEGMENT PARA PUBLIC 'CODE'
+        ASSUME CS:CODE
+
+FACTP    PROC FAR
+            
+    BEFORE: PUSH BP 
+            MOV BP,SP 
+            SUB SP,100
+            PUSH SI
+			
+    GETP:   MOV AX,1
+			MOV CX, [BP+8]
+			MOV SI, [BP+6]
+			
+    PREP:   CMP CX, 1
+            JE AFTER
+            
+    L1:     DEC CX
+			PUSH CX
+			PUSH SI
+            CALL FACTP
+            ADD SP, 2
+            MOV BX,[BP+8]
+            MOV SI, [BP+6]
+            MUL BX
+            MOV [SI],AX
+            JMP AFTER
+    
+    AFTER:  POP SI
+			MOV SP, BP
+            POP BP
+
+            RET
+FACTP    ENDP
+
+CODE    ENDS
+        END

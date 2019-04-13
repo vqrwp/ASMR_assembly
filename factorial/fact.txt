@@ -1,0 +1,65 @@
+EXTRN FACT: FAR
+EXTRN FACTP: FAR
+EXTRN FACTR: FAR
+EXTRN FACTS: FAR
+
+SSTACK  SEGMENT PARA STACK  'STACK'
+        DB   256 DUP(0)
+SSTACK  ENDS
+
+
+DSEG    SEGMENT  PARA PUBLIC 'DATA'
+		RES1 DB ?
+		RES2 DB ?
+		RES3 DB ?
+		RES4 DB ?
+DSEG    ENDS
+
+
+CODE    SEGMENT PARA PUBLIC 'CODE'
+        ASSUME CS:CODE,DS:DSEG,SS:SSTACK
+
+    BEGIN   PROC FAR
+
+    PREP:   MOV  AX,DSEG
+            MOV  DS,AX
+
+    M2:     MOV AX,3 
+            PUSH AX
+            CALL FACT
+            ADD SP, 2
+            MOV RES1, AL
+            
+    M3:     MOV AX,4 
+            PUSH AX
+            MOV BX,OFFSET RES2
+            PUSH BX
+            CALL FACTP
+            ADD SP, 2
+	
+	M4:     MOV AX,5
+			PUSH AX
+			MOV BX,OFFSET RES3
+			PUSH BX
+			CALL FACTR
+			ADD SP, 2
+			
+	M5:     MOV AX,6
+			PUSH AX
+			MOV BX,OFFSET RES4
+			PUSH BX
+			CALL FACTS
+			ADD SP, 2
+			
+			MOV DL, BL
+			MOV AH, 2
+			INT 21H
+			
+    EXIT:   MOV AL,0
+			MOV AH,4CH
+			INT 21H
+			
+    BEGIN   ENDP
+
+CODE    ENDS
+        END  BEGIN

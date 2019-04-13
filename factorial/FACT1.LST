@@ -1,0 +1,78 @@
+Microsoft (R) Macro Assembler Version 5.10                  4/7/19 19:46:42
+
+                                                             Page     1-1
+
+
+       1				PUBLIC FACT
+       2				
+       3 0000				CODE    SEGMENT PARA PUBLIC 'CODE'
+       4				        ASSUME CS:CODE
+       5				
+       6 0000				FACT    PROC FAR
+       7				            
+       8 0000  55			    BEFORE: PUSH BP 
+       9 0001  8B EC			            MOV BP,SP 
+      10 0003  83 EC 64			            SUB SP,100 
+      11							
+      12 0006  B8 0001			    GETP:   MOV AX,1
+      13 0009  8B 4E 06						MOV CX, [BP+6]
+      14				    
+      15 000C  83 F9 01			    PREP:   CMP CX, 1
+      16 000F  74 12			            JE AFTER
+      17				            
+      18 0011  49			    L1:     DEC CX
+      19 0012  51						PUSH CX
+      20 0013  9A 0000 ---- R		            CALL FACT
+      21 0018  83 C4 02			            ADD SP, 2
+      22 001B  8B 5E 06			            MOV BX,[BP+6]
+      23 001E  F7 E3			            MUL BX
+      24 0020  EB 01 90			            JMP AFTER
+      25				    
+      26 0023  8B E5			    AFTER:  MOV SP, BP
+      27 0025  5D			            POP BP
+      28				
+      29 0026  CB			            RET
+      30 0027				FACT    ENDP
+      31				
+      32 0027				CODE    ENDS
+      33				        END
+Microsoft (R) Macro Assembler Version 5.10                  4/7/19 19:46:42
+
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CODE . . . . . . . . . . . . . .  	0027	PARA	PUBLIC	'CODE'
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+AFTER  . . . . . . . . . . . . .  	L NEAR	0023	CODE
+
+BEFORE . . . . . . . . . . . . .  	L NEAR	0000	CODE
+
+FACT . . . . . . . . . . . . . .  	F PROC	0000	CODE	Global	Length = 0027
+
+GETP . . . . . . . . . . . . . .  	L NEAR	0006	CODE
+
+L1 . . . . . . . . . . . . . . .  	L NEAR	0011	CODE
+
+PREP . . . . . . . . . . . . . .  	L NEAR	000C	CODE
+
+@CPU . . . . . . . . . . . . . .  	TEXT  0101h		
+@FILENAME  . . . . . . . . . . .  	TEXT  fact1		
+@VERSION . . . . . . . . . . . .  	TEXT  510		
+
+
+     33 Source  Lines
+     33 Total   Lines
+     12 Symbols
+
+  46588 + 447568 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

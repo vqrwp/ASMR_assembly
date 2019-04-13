@@ -1,0 +1,84 @@
+Microsoft (R) Macro Assembler Version 5.10                  4/7/19 19:46:48
+
+                                                             Page     1-1
+
+
+       1				PUBLIC FACTP
+       2				
+       3 0000				CODE    SEGMENT PARA PUBLIC 'CODE'
+       4				        ASSUME CS:CODE
+       5				
+       6 0000				FACTP    PROC FAR
+       7				            
+       8 0000  55			    BEFORE: PUSH BP 
+       9 0001  8B EC			            MOV BP,SP 
+      10 0003  83 EC 64			            SUB SP,100
+      11 0006  56			            PUSH SI
+      12							
+      13 0007  B8 0001			    GETP:   MOV AX,1
+      14 000A  8B 4E 08						MOV CX, [BP+8]
+      15 000D  8B 76 06						MOV SI, [BP+6]
+      16							
+      17 0010  83 F9 01			    PREP:   CMP CX, 1
+      18 0013  74 18			            JE AFTER
+      19				            
+      20 0015  49			    L1:     DEC CX
+      21 0016  51						PUSH CX
+      22 0017  56						PUSH SI
+      23 0018  9A 0000 ---- R		            CALL FACTP
+      24 001D  83 C4 02			            ADD SP, 2
+      25 0020  8B 5E 08			            MOV BX,[BP+8]
+      26 0023  8B 76 06			            MOV SI, [BP+6]
+      27 0026  F7 E3			            MUL BX
+      28 0028  89 04			            MOV [SI],AX
+      29 002A  EB 01 90			            JMP AFTER
+      30				    
+      31 002D  5E			    AFTER:  POP SI
+      32 002E  8B E5						MOV SP, BP
+      33 0030  5D			            POP BP
+      34				
+      35 0031  CB			            RET
+      36 0032				FACTP    ENDP
+      37				
+      38 0032				CODE    ENDS
+      39				        END
+Microsoft (R) Macro Assembler Version 5.10                  4/7/19 19:46:48
+
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CODE . . . . . . . . . . . . . .  	0032	PARA	PUBLIC	'CODE'
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+AFTER  . . . . . . . . . . . . .  	L NEAR	002D	CODE
+
+BEFORE . . . . . . . . . . . . .  	L NEAR	0000	CODE
+
+FACTP  . . . . . . . . . . . . .  	F PROC	0000	CODE	Global	Length = 0032
+
+GETP . . . . . . . . . . . . . .  	L NEAR	0007	CODE
+
+L1 . . . . . . . . . . . . . . .  	L NEAR	0015	CODE
+
+PREP . . . . . . . . . . . . . .  	L NEAR	0010	CODE
+
+@CPU . . . . . . . . . . . . . .  	TEXT  0101h		
+@FILENAME  . . . . . . . . . . .  	TEXT  fact2		
+@VERSION . . . . . . . . . . . .  	TEXT  510		
+
+
+     39 Source  Lines
+     39 Total   Lines
+     12 Symbols
+
+  46588 + 447568 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

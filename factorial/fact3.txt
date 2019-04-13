@@ -1,0 +1,81 @@
+PUBLIC FACTR
+PUBLIC FACTS
+PUBLIC INFACTS
+PUBLIC INFACT
+
+CODE    SEGMENT PARA PUBLIC 'CODE'
+        ASSUME CS:CODE
+
+FACTR    PROC FAR
+            
+    BEFORE: PUSH BP 
+            MOV BP,SP 
+            SUB SP,100
+            PUSH SI
+			
+    GETP:   MOV CX, [BP+8]
+			MOV SI, [BP+6]
+            
+    L1:     CALL INFACT
+            MOV SI, [BP+6]
+            MOV [SI],AX
+    
+    AFTER:  POP SI
+			MOV SP, BP
+            POP BP
+
+            RET
+FACTR    ENDP
+
+INFACT    PROC NEAR
+			
+    GET:    MOV AX,1
+			
+    PRE:    CMP CX, 1
+            JE AF
+            
+    L:      DEC CX
+            CALL INFACT
+            INC CX
+            MUL CX
+    
+    AF:     RET
+    
+            
+INFACT    ENDP
+
+FACTS    PROC FAR
+            
+    BEFORS: PUSH BP 
+            MOV BP,SP 
+            SUB SP,100
+            PUSH SI
+			
+    GETS:   MOV CX, [BP+8]
+			MOV SI, [BP+6]
+			MOV AX,1
+            
+    L1S:    CALL INFACTS
+            MOV SI, [BP+6]
+            MOV [SI],AX
+    
+    AFTES:  POP SI
+			MOV SP, BP
+            POP BP
+
+            RET
+FACTS    ENDP
+
+INFACTS    PROC NEAR
+			
+	START:	MUL CX
+			DEC CX
+			JE AFS
+			CALL INFACTS
+    
+    AFS:    RET
+            
+INFACTS    ENDP
+
+CODE    ENDS
+        END

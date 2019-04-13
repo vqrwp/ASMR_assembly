@@ -1,0 +1,33 @@
+PUBLIC FACT
+
+CODE    SEGMENT PARA PUBLIC 'CODE'
+        ASSUME CS:CODE
+
+FACT    PROC FAR
+            
+    BEFORE: PUSH BP 
+            MOV BP,SP 
+            SUB SP,100 
+			
+    GETP:   MOV AX,1
+			MOV CX, [BP+6]
+    
+    PREP:   CMP CX, 1
+            JE AFTER
+            
+    L1:     DEC CX
+			PUSH CX
+            CALL FACT
+            ADD SP, 2
+            MOV BX,[BP+6]
+            MUL BX
+            JMP AFTER
+    
+    AFTER:  MOV SP, BP
+            POP BP
+
+            RET
+FACT    ENDP
+
+CODE    ENDS
+        END

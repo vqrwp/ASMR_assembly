@@ -1,0 +1,156 @@
+Microsoft (R) Macro Assembler Version 5.10                  2/16/19 22:12:06
+                                                             Page     1-1
+
+
+ 0000				SSTACK     SEGMENT PARA STACK  'STACK'
+ 0000  0040[			                DB   64 DUP('СТЕК____')
+	   D0 A1 D0 A2 D0	
+	   95 D0 9A 5F 5F	
+	   5F 5F		
+			 ]	
+				
+ 0300				     SSTACK     ENDS
+				
+ 0000				     DSEG          SEGMENT  PARA PUBLIC 'DATA'
+ 0000  41			     CA        DB      'A'
+ 0001  36 35			     KA        DB      '65'
+ 0003  73 79 6D 62 6F 6C	     TXT       DB      'symbol "'
+       20 22			
+ 000B  00			     C$        DB      ?
+ 000C  22 20 68 61 73 20	               DB      '" has the code '
+       74 68 65 20 63 6F	
+       64 65 20			
+ 001B  00			    KCH1       DB      ?
+ 001C  00			    KCH2       DB      ?
+ 001D  0A 0D 24			               DB      10,13,'$'
+ 0020  73 74 61 72 74 20	    MSG0       DB      'start working',13,10,'$
+				'
+       77 6F 72 6B 69 6E	
+       67 0D 0A 24		
+ 0030  65 6E 64 20 77 6F	    MSG1       DB      'end working',13,10,'$'
+       72 6B 69 6E 67 0D	
+       0A 24			
+ 003E				     DSEG          ENDS
+				
+				SUBTTL         ОСНОВНАЯ ПРОГРАМ�
+				�А
+Microsoft (R) Macro Assembler Version 5.10                  2/16/19 22:12:06
+                                                             Page     1-2
+ОСНОВНАЯ ПРОГРАММА                         
+
+				PAGE
+ 0000				     CSEG      SEGMENT PARA PUBLIC 'CODE'
+				               ASSUME CS:CSEG,DS:DSEG,SS:SSTACK
+				
+ 0000				     BEGIN     PROC FAR
+				     ; занести в стек такие н
+				ачальные значения, чтобы �
+				�рограмма
+				     ; могла возвратить упра
+				вление MS DOS (отладчику) по R
+				ET.
+ 0000  1E			               PUSH  DS ; поместить в
+				 стек номер параграфа адр�
+				�са возврата
+ 0001  B8 0000			               MOV  AX,0
+ 0004  50			               PUSH  AX
+				
+				     ; загрузить адрес сегме
+				нта данных DS
+ 0005  B8 ---- R		     M1:       MOV  AX,DSEG
+ 0008  8E D8			               MOV  DS,AX
+				
+				     ; вывод текста "НАЧАЛО Р
+				АБОТЫ"
+ 000A  B4 09			     M2:       MOV  AH,9
+ 000C  BA 0020 R		               MOV  DX,OFFSET MSG0
+ 000F  CD 21			               INT  21H
+				
+				     ; вывод стоки "СИМВОЛ 'A' 
+				имеет код 65"
+ 0011  A0 0000 R		     MA:       MOV  AL,CA
+ 0014  A2 000B R		               MOV  C$,AL
+ 0017  A1 0001 R		                  MOV  AX,WORD PTR KA
+ 001A  A3 001B R		                  MOV  WORD PTR KCH1,AX
+ 001D  B4 09			               MOV  AH,9
+ 001F  BA 0003 R		               MOV DX,OFFSET TXT
+ 0022  CD 21			               INT  21H
+				
+				     ; вывод стоки "СИМВОЛ 'B' 
+				имеет код 66"
+ 0024  FE 06 000B R		     MB:       INC  C$
+ 0028  FE 06 001C R		               INC  KCH1+1
+ 002C  CD 21			               INT  21H
+				
+				     ; вывод стоки "СИМВОЛ 'C' 
+				имеет код 67"
+ 002E  FE 06 000B R		     MC:       INC  C$
+ 0032  FE 06 001C R		               INC  KCH1+1
+ 0036  CD 21			               INT  21H
+				
+				     ; вывод текста "КОНЕЦ  Р�
+				�БОТЫ"
+ 0038  B4 09			     M3:       MOV  AH,9
+ 003A  BA 0030 R		               MOV  DX,OFFSET MSG1
+Microsoft (R) Macro Assembler Version 5.10                  2/16/19 22:12:06
+                                                             Page     1-3
+ОСНОВНАЯ ПРОГРАММА                         
+
+ 003D  CD 21			               INT  21H
+				
+				     ; возвратить управлени�
+				� MS DOS (отладчику)
+ 003F  CB			               RET
+ 0040				     BEGIN     ENDP
+				
+ 0040				     CSEG      ENDS
+				               END  BEGIN
+Microsoft (R) Macro Assembler Version 5.10                  2/16/19 22:12:06
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CSEG . . . . . . . . . . . . . .  	0040	PARA	PUBLIC	'CODE'
+DSEG . . . . . . . . . . . . . .  	003E	PARA	PUBLIC	'DATA'
+SSTACK . . . . . . . . . . . . .  	0300	PARA	STACK	'STACK'
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+BEGIN  . . . . . . . . . . . . .  	F PROC	0000	CSEG	Length = 0040
+
+C$ . . . . . . . . . . . . . . .  	L BYTE	000B	DSEG
+CA . . . . . . . . . . . . . . .  	L BYTE	0000	DSEG
+
+KA . . . . . . . . . . . . . . .  	L BYTE	0001	DSEG
+KCH1 . . . . . . . . . . . . . .  	L BYTE	001B	DSEG
+KCH2 . . . . . . . . . . . . . .  	L BYTE	001C	DSEG
+
+M1 . . . . . . . . . . . . . . .  	L NEAR	0005	CSEG
+M2 . . . . . . . . . . . . . . .  	L NEAR	000A	CSEG
+M3 . . . . . . . . . . . . . . .  	L NEAR	0038	CSEG
+MA . . . . . . . . . . . . . . .  	L NEAR	0011	CSEG
+MB . . . . . . . . . . . . . . .  	L NEAR	0024	CSEG
+MC . . . . . . . . . . . . . . .  	L NEAR	002E	CSEG
+MSG0 . . . . . . . . . . . . . .  	L BYTE	0020	DSEG
+MSG1 . . . . . . . . . . . . . .  	L BYTE	0030	DSEG
+
+TXT  . . . . . . . . . . . . . .  	L BYTE	0003	DSEG
+
+@CPU . . . . . . . . . . . . . .  	TEXT  0101h		
+@FILENAME  . . . . . . . . . . .  	TEXT  prog		
+@VERSION . . . . . . . . . . . .  	TEXT  510		
+
+
+     68 Source  Lines
+     68 Total   Lines
+     30 Symbols
+
+  47980 + 457230 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

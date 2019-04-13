@@ -1,0 +1,132 @@
+Microsoft (R) Macro Assembler Version 5.10                  4/7/19 19:49:38
+
+                                                             Page     1-1
+
+
+       1				EXTRN FACT: FAR
+       2				EXTRN FACTP: FAR
+       3				EXTRN FACTR: FAR
+       4				EXTRN FACTS: FAR
+       5				
+       6 0000				SSTACK  SEGMENT PARA STACK  'STACK'
+       7 0000  0100[			        DB   256 DUP(0)
+       8	   00			
+       9			 ]	
+      10				
+      11 0100				SSTACK  ENDS
+      12				
+      13				
+      14 0000				DSEG    SEGMENT  PARA PUBLIC 'DATA'
+      15 0000  00					RES1 DB ?
+      16 0001  00					RES2 DB ?
+      17 0002  00					RES3 DB ?
+      18 0003  00					RES4 DB ?
+      19 0004				DSEG    ENDS
+      20				
+      21				
+      22 0000				CODE    SEGMENT PARA PUBLIC 'CODE'
+      23				        ASSUME CS:CODE,DS:DSEG,SS:SSTAC
+					K
+      24				
+      25 0000				    BEGIN   PROC FAR
+      26				
+      27 0000  B8 ---- R		    PREP:   MOV  AX,DSEG
+      28 0003  8E D8			            MOV  DS,AX
+      29				
+      30 0005  B8 0003			    M2:     MOV AX,3 
+      31 0008  50			            PUSH AX
+      32 0009  9A 0000 ---- E		            CALL FACT
+      33 000E  83 C4 02			            ADD SP, 2
+      34 0011  A2 0000 R		            MOV RES1, AL
+      35				            
+      36 0014  B8 0004			    M3:     MOV AX,4 
+      37 0017  50			            PUSH AX
+      38 0018  BB 0001 R		            MOV BX,OFFSET RES2
+      39 001B  53			            PUSH BX
+      40 001C  9A 0000 ---- E		            CALL FACTP
+      41 0021  83 C4 02			            ADD SP, 2
+      42					
+      43 0024  B8 0005				M4:     MOV AX,5
+      44 0027  50						PUSH AX
+      45 0028  BB 0002 R					MOV BX,OFFSET R
+					ES3
+      46 002B  53						PUSH BX
+      47 002C  9A 0000 ---- E					CALL FACTR
+      48 0031  83 C4 02						ADD SP, 2
+      49							
+      50 0034  B8 0006				M5:     MOV AX,6
+      51 0037  50						PUSH AX
+      52 0038  BB 0003 R					MOV BX,OFFSET R
+Microsoft (R) Macro Assembler Version 5.10                  4/7/19 19:49:38
+
+                                                             Page     1-2
+
+
+					ES4
+      53 003B  53						PUSH BX
+      54 003C  9A 0000 ---- E					CALL FACTS
+      55 0041  83 C4 02						ADD SP, 2
+      56							
+      57 0044  8A D3						MOV DL, BL
+      58 0046  B4 02						MOV AH, 2
+      59 0048  CD 21						INT 21H
+      60							
+      61 004A  B0 00			    EXIT:   MOV AL,0
+      62 004C  B4 4C						MOV AH,4CH
+      63 004E  CD 21						INT 21H
+      64							
+      65 0050				    BEGIN   ENDP
+      66				
+      67 0050				CODE    ENDS
+      68				        END  BEGIN
+Microsoft (R) Macro Assembler Version 5.10                  4/7/19 19:49:38
+
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CODE . . . . . . . . . . . . . .  	0050	PARA	PUBLIC	'CODE'
+DSEG . . . . . . . . . . . . . .  	0004	PARA	PUBLIC	'DATA'
+SSTACK . . . . . . . . . . . . .  	0100	PARA	STACK	'STACK'
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+BEGIN  . . . . . . . . . . . . .  	F PROC	0000	CODE	Length = 0050
+
+EXIT . . . . . . . . . . . . . .  	L NEAR	004A	CODE
+
+FACT . . . . . . . . . . . . . .  	L FAR 	0000		External
+FACTP  . . . . . . . . . . . . .  	L FAR 	0000		External
+FACTR  . . . . . . . . . . . . .  	L FAR 	0000		External
+FACTS  . . . . . . . . . . . . .  	L FAR 	0000		External
+
+M2 . . . . . . . . . . . . . . .  	L NEAR	0005	CODE
+M3 . . . . . . . . . . . . . . .  	L NEAR	0014	CODE
+M4 . . . . . . . . . . . . . . .  	L NEAR	0024	CODE
+M5 . . . . . . . . . . . . . . .  	L NEAR	0034	CODE
+
+PREP . . . . . . . . . . . . . .  	L NEAR	0000	CODE
+
+RES1 . . . . . . . . . . . . . .  	L BYTE	0000	DSEG
+RES2 . . . . . . . . . . . . . .  	L BYTE	0001	DSEG
+RES3 . . . . . . . . . . . . . .  	L BYTE	0002	DSEG
+RES4 . . . . . . . . . . . . . .  	L BYTE	0003	DSEG
+
+@CPU . . . . . . . . . . . . . .  	TEXT  0101h		
+@FILENAME  . . . . . . . . . . .  	TEXT  fact		
+@VERSION . . . . . . . . . . . .  	TEXT  510		
+
+
+     65 Source  Lines
+     65 Total   Lines
+     25 Symbols
+
+  46664 + 445444 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors
