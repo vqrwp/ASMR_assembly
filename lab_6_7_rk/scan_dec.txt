@@ -1,0 +1,83 @@
+PUBLIC SCAN
+
+DSEG	SEGMENT PARA PUBLIC 'DATA'
+		ENTER		DB	'>> $'
+		NEW_LINE	DB	10, 13, '$'
+DSEG	ENDS
+
+CSEG	SEGMENT PARA PUBLIC 'CODE'
+		ASSUME CS:CSEG
+		
+SCAN PROC NEAR
+		MOV  AH, 9 ; print flag symbols >>$
+		MOV  DX, OFFSET ENTER
+		INT  21H
+	
+CLEAN:
+		XOR  BX, BX ; clean bx
+		XOR  CX, CX ; clean cx
+	
+INPUT_LOOP: ; scan symbols in loop
+		MOV  AH, 8 ; scan one symbol
+		INT  21H
+		
+		CMP  AL, 13  ; perenos karetki
+		JE   INPUT_END ; end scanning
+		
+		CMP  AL, '-' ; minus code
+		JE   NEG_NUM 
+		
+		CMP  AL, '0' 
+		JB   INPUT_LOOP ; restart loop
+		CMP  AL, '9'
+		JA   INPUT_LOOP ; restart loop
+		
+		MOV  AH, 2 ; print from DL - make echo
+		MOV  DL, AL
+		INT  21H
+		
+		MOV  CL, AL ; save AL (scanned symbol)
+		MOV  AX, BX ; mov prev num to ax
+		
+		SHL  AX, 1 ; (x * 2 + 1) * 2 = 10 * x (можно делать сдвиг константы только на 1)
+		SHL  AX, 1
+		ADD  AX, BX
+		SHL  AX, 1 ; здесь мы повышаем разряд числа (у нас была 1 в ах, стало 10)
+		
+		MOV  BL, CL	; get our curren symbol
+		SUB  BL, '0' ; get number from the code
+		XOR  BH, BH ; clean bh
+		ADD  BX, AX ; in bx all number, in ax current num
+		
+		JMP  INPUT_LOOP
+		
+NEG_NUM:
+		MOV  AH, 2 ; make echo
+		MOV  DL, AL
+		INT  21H
+		
+		MOV  CH, 1 ; if we enter more then one minus then saves only one
+		
+		JMP  INPUT_LOOP ; common loop
+		
+INPUT_END:
+		MOV  AH, 9 ; print newline
+		MOV  DX, OFFSET NEW_LINE
+		INT  21H
+		
+		CMP  CH, 1  
+		JNE  SCAN_END ; if positive
+		
+		NEG  BX ; make negative from bx 
+		
+SCAN_END:
+		XOR  DH, DH ; clean dh
+		MOV  DL, CH ; flag minus
+		MOV  AX, BX ; all number from bx to ax
+		
+		RET
+		
+SCAN ENDP
+
+CSEG	ENDS
+END

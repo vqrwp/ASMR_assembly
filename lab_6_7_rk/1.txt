@@ -1,0 +1,128 @@
+PUBLIC UB
+PUBLIC UD
+PUBLIC UH
+
+DSEG	SEGMENT PARA PUBLIC 'DATA'
+		NEWLINE	DB	10, 13, '$'
+        SYMBOLS DB '0123456789ABCDEF' 
+DSEG	ENDS
+
+CSEG	SEGMENT PARA PUBLIC 'CODE'
+		ASSUME CS:CSEG, DS:DSEG
+		
+UB		PROC NEAR ; BIN BIN BIN
+		PUSH BP
+		MOV  BP, SP ; stack registers, SP - point on the top of the stack, so we configure stack here
+		
+		MOV  BX, [BP + 6] ; in BX put something that is in stack by the number six (there are SI, X, BP), BX = X
+		
+		MOV CX, 16 ; 16
+		
+; delete all zeros on the left in ub1 and ub2
+UB_1:
+		SHL BX, 1 ; bitwise left shift by 1 (* 2)
+		JNC UB_2 ; no overflow, CF=0
+		MOV DH, 1 ; remember 1 - flag of one digit, there is overflow
+		JMP UB_4
+UB_2:
+		LOOP UB_1
+		INC CX ; because if it is X == 0, CX = -1
+UB_3:
+		MOV DH, 0 
+		SHL BX, 1 ; bitwise left shift by 1
+		JNC UB_4 ; no overflow, CF=0, if 0
+		MOV DH, 1 ; DH = 1 ??, if 1
+		
+UB_4: ; print first meaning digit
+		MOV  DL, '0' ; DL = 30
+		ADD  DL, DH ; DL = 30 + DH                  	
+		MOV  AH, 2 ; print DL
+		INT  21h
+			
+		DEC  CX ; minus one digit  
+		JC UB_5 ; there is overflow
+		CMP CX, 0 
+		JA  UB_3 ; CX > 0, ZF=0 (so if loop is not over)
+ 
+UB_5:	MOV  AH, 9
+		MOV  DX, OFFSET NEWLINE
+		INT  21H
+
+		POP BP
+		RET 4 ; delete x, si, clear stack
+UB		ENDP
+		
+UD		PROC NEAR ; DEC DEC DEC
+		PUSH BP
+		MOV	 BP, SP 
+		MOV	 AX, [BP + 6] ; AX = X
+		
+UD_1:
+        XOR CX, CX ; clean CX
+        MOV BX, 10 ; BASIS OF THE SYSTEM OF CALCULATION
+UD_2:
+        XOR DX, DX ; clean DX
+        DIV BX ; divisible AX, divider BX, private AX, balance DX, (AX = BX * AX + DX)  ax / 10 = ax / bx, answer in ax
+        ADD DX, '0' ; DX = 30
+        PUSH DX
+        INC CX ; get length
+        CMP AX, 0 ; AX = 0 - all the number passed by
+        JNE UD_2 ; ZF = 0 (so if AX != 0)
+
+        MOV AH, 2 ;  print DL
+UD_3:
+        POP DX ; CX = length of the number
+        INT 21H
+        LOOP UD_3
+		 
+		MOV  AH, 9
+		MOV  DX, OFFSET NEWLINE
+		INT  21H
+		
+		POP BP
+		RET 4 ; delete x, si
+UD		ENDP
+
+UH		PROC NEAR
+		PUSH BP
+        	PUSH SI
+		MOV  BP, SP
+
+        	MOV DX, [BP + 8] 
+		MOV SI, 16
+		MOV CX, 4
+
+LOOP_H:
+		MOV BL, 4
+
+		XCHG CL, BL 
+		ROL DX, CL 
+		XCHG CL, BL  
+
+		MOV AL, 0Fh ; AL = 15
+		AND AL, DL ; MASK FIRST DIGIT WITH 15
+            
+        MOV BX, OFFSET SYMBOLS  
+        XLAT
+		
+		MOV CH, AL
+        XCHG  DL, CH
+		MOV AH, 2 ; PRINT DL, SO WE ACTUALLY PRINT AL
+		INT 21h
+		XCHG  DL, CH
+		
+		XOR CH, CH ; CLEAR CH
+		LOOP LOOP_H
+
+; PRINT NEWLINE
+		MOV AH, 9 
+		MOV DX, OFFSET NEWLINE
+		INT 21H
+		
+		POP SI
+		POP BP
+		RET 4
+UH		ENDP
+		
+CSEG	ENDS
+END

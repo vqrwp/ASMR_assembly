@@ -1,0 +1,91 @@
+PUBLIC SB
+PUBLIC SD
+PUBLIC SH
+
+EXTRN  UB : NEAR
+EXTRN  UD : NEAR
+EXTRN  UH : NEAR
+
+CSEG	SEGMENT PARA PUBLIC 'CODE'
+		ASSUME CS:CSEG
+		
+SB		PROC NEAR ; all the same in all the funcs
+		PUSH BP
+		MOV  BP, SP
+		
+		MOV  CX, [BP + 4] ; SI
+		MOV  BX, [BP + 6] ; X
+		
+		CMP  CL, 0 ; CL - flag minus
+		JE   SB_SKIP_NEG ; if CL == 0
+		
+		MOV  AH, 2 ; print minus before the num
+		MOV  DL, '-'
+		INT  21H
+		
+		NEG  BX ; make negative
+		
+SB_SKIP_NEG: ; if the number is positive
+		PUSH BX
+		PUSH CX
+		
+		CALL UB ; call unsigned bin
+		
+		POP BP
+		RET 4 ; delete x, si
+SB		ENDP
+		
+SD		PROC NEAR
+		PUSH BP
+		MOV  BP, SP
+		
+		MOV  CX, [BP + 4] ; X ?
+		MOV  BX, [BP + 6] ; SI ?
+		
+		CMP  CL, 0
+		JE   SD_SKIP_NEG
+		
+		MOV  AH, 2
+		MOV  DL, '-'
+		INT  21H
+		
+		NEG  BX
+		
+SD_SKIP_NEG:
+		PUSH  BX
+		PUSH  CX
+		
+		CALL  UD
+		
+		POP BP
+		RET 4 ; delete x, si
+SD		ENDP
+		
+SH		PROC NEAR
+		PUSH BP
+		MOV  BP, SP
+		
+		MOV  CX, [BP + 4]
+		MOV  BX, [BP + 6]
+		
+		CMP  CL, 0
+		JE   SH_SKIP_NEG
+		
+		MOV  AH, 2
+		MOV  DL, '-'
+		INT  21H
+		
+		NEG  BX
+		
+SH_SKIP_NEG:
+		PUSH  BX
+		PUSH  CX
+		
+		CALL  UH
+		
+		POP BP
+		RET 4 ; delete x, si
+SH		ENDP
+		
+CSEG	ENDS
+END
