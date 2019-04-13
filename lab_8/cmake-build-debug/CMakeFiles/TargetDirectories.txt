@@ -1,0 +1,3 @@
+C:/msys64/home/Margo/oop/lab8/cmake-build-debug/CMakeFiles/lab8.dir
+C:/msys64/home/Margo/oop/lab8/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/msys64/home/Margo/oop/lab8/cmake-build-debug/CMakeFiles/rebuild_cache.dir

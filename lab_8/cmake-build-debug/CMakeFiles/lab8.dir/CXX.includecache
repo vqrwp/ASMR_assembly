@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/msys64/home/Margo/oop/lab8/main.cpp
+conio.h
+-
+iostream
+-
+tchar.h
+-
+SDKDDKVer.h
+-
+
