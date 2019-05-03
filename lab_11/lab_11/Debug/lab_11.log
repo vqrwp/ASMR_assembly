@@ -1,0 +1,5 @@
+﻿  Assembling Dlina.asm...
+Dlina.asm(21): error A2008: syntax error : SCASB
+Dlina.asm(23): error A2008: syntax error : EDI
+Dlina.asm(14): error A2006: undefined symbol : M1
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\BuildCustomizations\masm.targets(69,5): error MSB3721: выход из команды "ml.exe /c /nologo /Zi /Fo"Debug\Dlina.obj" /W3 /errorReport:prompt  /TaDlina.asm" с кодом "1".
