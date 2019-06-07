@@ -16,4 +16,4 @@
 | 9 | passed |
 | 10 | passed |
 | 11 | passed |
-| 12 | passed 3/4 |
+| 12 | passed |
